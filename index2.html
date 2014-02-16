@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Video Poker</title>
+<link href="styles/main.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="js/vpFunctions.js"></script>
+</head>
+
+<body>
+	<div id="wrapper">
+        <div id="payoutBoard">
+            <div id="payoutBoardLeftColumn">
+                <div class="handColumn">
+                    Royal Flush<br />
+                    Straight Flush<br />
+                    4 of a Kind<br />
+                    Full House<br />
+                    Flush<br />
+                </div>
+                <div class="payoutColumn">
+                    800:1<br />
+                    90:1<br />
+                    25:1<br />
+                    9:1<br />
+                    6:1<br />
+                </div>
+            </div>
+            <div id="payoutBoardRightColumn">
+                <div class="handColumn">
+                    Straight<br />
+                    3 of a Kind<br />
+                    Two Pair<br />
+                    Jacks or Better<br />
+                </div>
+                <div class="payoutColumn">
+                    4:1<br />
+                    3:1<br />
+                    2:1<br />
+                    1:1<br />
+                </div>
+            </div>
+        </div>
+        <h2 id="displayResult"></h2>
+        <div class="playSection">
+        	<p id="holdStatus1" class="hold">held</p>
+            <div id="cardSlot1" class="cardSlot"></div>
+            <div id="holdButton1" onClick="toggleSelection(this)" class="unselected">
+                <p class="topHalf">HOLD</p>
+                <p>CANCEL</p>
+            </div>
+        </div>
+        <div class="playSection">
+        	<p id="holdStatus2" class="hold">held</p>
+            <div id="cardSlot2" class="cardSlot"></div>
+            <div id="holdButton2" onClick="toggleSelection(this)" class="unselected">
+                <p class="topHalf">HOLD</p>
+                <p>CANCEL</p>
+            </div>
+        </div>
+        <div class="playSection">
+        	<p id="holdStatus3" class="hold">held</p>
+            <div id="cardSlot3" class="cardSlot"></div>
+            <div id="holdButton3" onClick="toggleSelection(this)" class="unselected">
+                <p class="topHalf">HOLD</p>
+                <p>CANCEL</p>
+            </div>
+        </div>
+        <div class="playSection" class="hold">
+        	<p id="holdStatus4" class="hold">held</p>
+            <div id="cardSlot4" class="cardSlot"></div>
+            <div id="holdButton4" onClick="toggleSelection(this)" class="unselected">
+                <p class="topHalf">HOLD</p>
+                <p>CANCEL</p>    
+            </div>
+        </div>
+        <div class="playSection">
+        	<p id="holdStatus5" class="hold">held</p>
+            <div id="cardSlot5" class="cardSlot"></div>
+            <div id="holdButton5" onClick="toggleSelection(this)" class="unselected">
+                <p class="topHalf">HOLD</p>
+                <p>CANCEL</p>    
+            </div>
+        </div>
+            <br  style="clear:both;" />
+            <input type="button" value="Deal" onClick="dealOrDrawClicked()"id="dealButton" />
+    </div>
+</body>
+</html>
