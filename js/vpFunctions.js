@@ -50,10 +50,18 @@ var playersHand;
             var cardSlot = document.getElementById(divId);
             var cardId = "card" + divId.slice(-1);
             cardSlot.innerHTML = '';
-            var xhr = new XMLHttpRequest;
+            var xhr;
+			if (window.XMLHttpRequest)
+  			{
+  				xhr=new XMLHttpRequest();
+  			}
+			else
+  			{
+  				xhr=new ActiveXObject("Microsoft.XMLHTTP");
+  			}
             xhr.open('get', 'https://dl.dropboxusercontent.com/u/17091314/PlayingCards/' + cardValueSuit + '.svg', true);
             xhr.onreadystatechange = function () {
-                if (xhr.readyState != 4 && xmlhttp.status==200) return;
+                if (xhr.readyState != 4 && xhr.status==200) return;
                 var svg = xhr.responseXML.documentElement;
                 svg = document.importNode(svg, true);
                 svg = sizeAndIdCard(svg, cardId);
@@ -70,6 +78,8 @@ var playersHand;
 		for (var index = 0; index < 5; index++)
 		{
 			loadCard(deck[index], "cardSlot" + (index + 1));
+			document.getElementById("holdStatus" + (index + 1)).innerHTML = "";
+			document.getElementById("holdButton" + (index + 1)).className = "unselected";
 			playersHand[index] = deck[index];
 		}
 	}
@@ -80,7 +90,7 @@ var playersHand;
 		for (var index = 0; index < 5; index++)
 		{
 			var holdButton = document.getElementById("holdButton" + (index + 1));
-			if (!holdButton.className == 'selected')
+			if (holdButton.className == 'unselected')
 			{
 				var deckIndex = function getDrawCard() {
 					var result = Math.floor(Math.random() * 51) + 0;
@@ -92,21 +102,10 @@ var playersHand;
 					getDrawCard();
 				};
 				deckIndex();
-				document.getElementById("card" + (index + 1) + "Value").innerHTML = deck[randomNumbers[randomNumbers.length - 1]];
+				var cardByValueSuit = deck[randomNumbers[randomNumbers.length - 1]];
+				playersHand[index] = cardByValueSuit;
+				loadCard(cardByValueSuit, "cardSlot" + (index + 1));
 			}
-			else
-			{
-				document.getElementById("holdCard" + (index + 1) + "Label").innerHTML = "Held";
-			}
-		}
-	}
-	
-	function markForHighlight(bin)
-	{
-		for(var card = 0; card < bin.length; card++)
-		{
-			var divIndex = bin[card][2];
-			document.getElementById("card" + divIndex).className += " " + "markForHighlight";
 		}
 	}
 	
@@ -197,7 +196,6 @@ var playersHand;
 		if (histogram[0].length == 4)
 		{
 			//quads
-			markForHighlight(histogram[0]);
 			return 7;
 		}
 		else if (histogram[0].length == 3 && histogram[1].length == 2)
@@ -208,14 +206,12 @@ var playersHand;
 		else if (histogram[0].length == 3 && histogram[1].length == 1)
 		{
 			//trips
-			markForHighlight(histogram[0]);
 			return 3;
 		}
 		else if (histogram[0].length == 2 && histogram[1].length == 2)
 		{
 			//two pair
 			var newBin = [histogram[0][0],histogram[0][1],histogram[1][0],histogram[1][1]];
-			markForHighlight(newBin);
 			return 2;
 		}
 		else if (histogram[0].length == 2 && histogram[1].length == 1)
@@ -223,7 +219,6 @@ var playersHand;
 			//pair only if smallPairs == 0
 			if(smallPairs == 0)
 			{
-				markForHighlight(histogram[0]);
 				return 1;
 			}
 			else
@@ -300,10 +295,10 @@ var playersHand;
 	function evaluateHand() {
 		var result = 0;
 		var hand = new Array();
-		for (var index = 0; index < 5; index++)
+		for (var index = 0; index < playersHand.length; index++)
 		{
 			var cardByValueSuitPosition = new Array()
-			var card = document.getElementById("card" + (index + 1) + "Value").innerHTML;
+			var card = playersHand[index];
 			var suit = card.substring(card.length -1);
 			var value = card.substr(0, card.length - 1);
 			var numericalValue;
@@ -379,18 +374,14 @@ var playersHand;
 			}
 		}
 		
-		var highlightAll = false;
-		
 		switch (result)
 		{
 			case 9:
 			document.getElementById("displayResult").innerHTML = "Royal Flush!";
-			highlightAll = true;
 			break;
 			
 			case 8:
 			document.getElementById("displayResult").innerHTML = "Straight Flush!";
-			highlightAll = true;
 			break;
 			
 			case 7:
@@ -399,17 +390,14 @@ var playersHand;
 			
 			case 6:
 			document.getElementById("displayResult").innerHTML = "Full House!";
-			highlightAll = true;
 			break;
 			
 			case 5:
 			document.getElementById("displayResult").innerHTML = "Flush!";
-			highlightAll = true;
 			break;
 			
 			case 4:
 			document.getElementById("displayResult").innerHTML = "Straight!";
-			highlightAll = true;
 			break;
 			
 			case 3:
@@ -428,14 +416,6 @@ var playersHand;
 			document.getElementById("displayResult").innerHTML = "Sorry. You didn't win.";
 			break;
 		}
-		
-		if (highlightAll)
-		{
-			for(var index = 1; index <= 5; index++)
-			{
-				document.getElementById("card" + index).className += " " + "markForHighlight";
-			}	
-		}
 	}
 	
 	function dealOrDrawClicked() {
@@ -451,8 +431,10 @@ var playersHand;
 		{
 			//This is a draw event
 			drawCards();
+			var localCheck = playersHand;
 			result = evaluateHand();
 			dealButton.value = "Deal";
+			playersHand = null;
 			deck = null;
 		}
 	}
@@ -467,11 +449,14 @@ var playersHand;
 	}
 	
 	function toggleSelection(callingButton) {
+		var slotNumber = callingButton.id.slice(-1);
 		if (callingButton.className == 'selected')
 		{
+			document.getElementById("holdStatus" + slotNumber).innerHTML = "";
 			callingButton.className = 'unselected';
 		}
 		else {	
+			document.getElementById("holdStatus" + slotNumber).innerHTML = "hold";
 			callingButton.className = 'selected';
 		}
 	}
