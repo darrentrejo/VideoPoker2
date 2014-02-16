@@ -1,5 +1,6 @@
 var deck;
 var playersHand;
+var svgCache = {};
 
 	function getRandomNumbers()
    	{
@@ -47,27 +48,40 @@ var playersHand;
 	}
 	
 	function loadCard(cardValueSuit, divId) {
-            var cardSlot = document.getElementById(divId);
-            var cardId = "card" + divId.slice(-1);
-            cardSlot.innerHTML = '';
-            var xhr;
+		var cardSlot = document.getElementById(divId);
+		var cardId = "card" + divId.slice(-1);
+		cardSlot.innerHTML = '';
+		if(typeof svgCache[cardValueSuit] != "undefined")
+		{
+			var svg = svgCache[cardValueSuit];
+			svg = svg.documentElement;
+			svg = document.importNode(svg, true);
+			svg = sizeAndIdCard(svg, cardId);
+			cardSlot.appendChild(svg);
+		}
+		else
+		{
+			var xhr;
 			if (window.XMLHttpRequest)
-  			{
-  				xhr=new XMLHttpRequest();
-  			}
+			{
+				xhr=new XMLHttpRequest();
+			}
 			else
-  			{
-  				xhr=new ActiveXObject("Microsoft.XMLHTTP");
-  			}
-            xhr.open('get', 'https://dl.dropboxusercontent.com/u/17091314/PlayingCards/' + cardValueSuit + '.svg', true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState != 4 && xhr.status==200) return;
-                var svg = xhr.responseXML.documentElement;
-                svg = document.importNode(svg, true);
-                svg = sizeAndIdCard(svg, cardId);
-                cardSlot.appendChild(svg);
-            };
-            xhr.send();
+			{
+				xhr=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xhr.open('get', 'https://dl.dropboxusercontent.com/u/17091314/PlayingCards/' + cardValueSuit + '.svg', true);
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState != 4 && xhr.status==200) return;
+				var svg = xhr.responseXML;
+				svgCache[cardValueSuit] = svg;
+				svg = svg.documentElement;
+				svg = document.importNode(svg, true);
+				svg = sizeAndIdCard(svg, cardId);
+				cardSlot.appendChild(svg);
+			};
+			xhr.send();
+		}
     }
 	
 	function dealCards() {
