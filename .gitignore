@@ -1,4 +1,4 @@
-Images/Cards
+Images/Cards/
 card.html
 index.html
-.DS_Store
+*.DS_Store
