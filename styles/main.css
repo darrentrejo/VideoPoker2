@@ -7,7 +7,7 @@ body {
 }
 p {
 	margin:0;
-	padding0;
+	padding:0;
 }
 #wrapper {
 	width:600px;
@@ -61,13 +61,16 @@ p {
 #cards {
 	margin-top:12px;
 }
-div.cardSlot {
+.cardSlot {
+	position: relative;
 	float:left;
 	margin-bottom:12px;
 	margin-left:24px;
 	width:72px;
 	height: 100px;
 	overflow:hidden;
+	background-color: #ffffff;
+	border-radius: 8px;
 }
 #holdButton1, #holdButton2, #holdButton3, #holdButton4, #holdButton5 {
 	border: 2px solid #000000;
