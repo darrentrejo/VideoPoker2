@@ -5,8 +5,6 @@ Javascript video poker game
 
 Basic video poker functionality is in place. There is no betting.
 
-All AJAX requests are done synchronously. There is no handling of HTTP errors in AJAX calls... yet.
-
 The design is static. Responsive design will be added later.
 
 HTML5 browser compatibility is assumed. There is no handling of unsupported features in older browsers. In other words, no graceful degradation.
