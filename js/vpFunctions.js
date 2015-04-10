@@ -1,30 +1,5 @@
 ﻿var deck;
 var playersHand;
-
-    function getRandomNumbers()
-    {
-        var numbers;
-        var xhr;
-        if (window.XMLHttpRequest)
-        {
-            xhr=new XMLHttpRequest();
-        }
-        else
-        {
-            xhr=new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xhr.onreadystatechange=function()
-        {
-            if (xhr.readyState==4 && xhr.status==200)
-            {
-                numbers=xhr.responseText;
-                numbers=numbers.substring(0,numbers.lastIndexOf('\n'));
-            }
-        }		
-        xhr.open("GET","http://www.random.org/sequences/?min=1&max=52&col=1&format=plain&rnd=new",false);
-        xhr.send();
-        return numbers;
-    }
     
     function buildAndShuffleDeck() {
         var suits = new Array("S", "H", "C", "D");
@@ -37,13 +12,15 @@ var playersHand;
                 unshuffledDeck.push(values[i] + suits[j]);
             }
         }
-        var numberString = getRandomNumbers();
-        var numberArray = numberString.split("\n");
-        for (var number = 0; number < 51; number++)
-        {
-            var randomNumber = parseInt(numberArray[number]);
-            deck.push(unshuffledDeck[randomNumber - 1]);	
+
+        for (var k = 0; k < unshuffledDeck.length; k++) {
+            var rn = Math.floor(Math.random() * unshuffledDeck.length);
+            var temp = unshuffledDeck[k];
+            unshuffledDeck[k] = unshuffledDeck[rn];
+            unshuffledDeck[rn] = temp;
         }
+
+        this.deck = unshuffledDeck; //now shuffled
     }
     
     function loadCard(cardValue, cardSuit, canvasId) {
